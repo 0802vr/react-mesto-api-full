@@ -1,0 +1,7 @@
+.photo-container__elements{
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin: 0;
+
+}

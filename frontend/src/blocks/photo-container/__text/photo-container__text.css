@@ -1,0 +1,13 @@
+.photo-container__text {
+    font-weight: 900;
+    line-height: 29px;
+    font-size: 24px;
+    color: #000;
+    margin: 25px auto 31px 21px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 190px;
+     
+    
+}
