@@ -45,7 +45,7 @@ checkToken  (token) {
   .then(this._handleResponse)
 }
 }
-export default new Auth({server: "http://localhost:3000", handleResponse: (res) => {
+export default new Auth({server: 'https://api.rov.vas.nomoredomains.xyz', handleResponse: (res) => {
   if (!res.ok) {return Promise.reject(`Ошибка: ${res.status}`);}
    
   return res.json()

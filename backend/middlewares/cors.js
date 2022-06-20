@@ -2,6 +2,8 @@
 
 const allowedCors = [
   'http://localhost:3000',
+  'http://rov.vas.nomoredomains.xyz',
+  'https://rov.vas.nomoredomains.xyz',
 
 ];
 

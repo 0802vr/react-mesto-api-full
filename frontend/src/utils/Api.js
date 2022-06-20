@@ -101,6 +101,6 @@
 
 }
 
-const api = new Api({ baseUrl: 'http://localhost:3000', headers: { 'Content-Type': 'application/json' } })
+const api = new Api({ baseUrl: 'https://api.rov.vas.nomoredomains.xyz', headers: { 'Content-Type': 'application/json' } })
 
 export default api;
