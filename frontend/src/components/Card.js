@@ -1,48 +1,48 @@
 import React from "react";
 import { CurrentUserContext } from "../context/CurrentUserContext";
 
-function Card(props) {
+function Card({ onCardClick, card, onCardLike, onCardDelete }) {
   const currentUser = React.useContext(CurrentUserContext);
+  
   // Определяем, есть ли у карточки лайк, поставленный текущим пользователем
-  const isLiked = props.card.likes.some((i) => i._id === currentUser._id);
-
-  function handleClick() {
-    props.onCardClick(props.card);
+   
+   const isLiked = card.likes.some(i => i === currentUser._id);
+   console.log(isLiked)
+   function handleClick() {
+    onCardClick(card);
   }
-  function handleLikeClick() {
-    props.onCardLike(props);
-  }
+   
   function handleDeleteClick() {
-    props.onCardDelete(props.card);
+    onCardDelete(card);
   }
-
+ 
   return (
-    <li className="photo-container" key={props.card._id}>
+    <li className="photo-container" key={card._id}>
       <img
         className="photo-container__img"
-        src={props.card.link}
-        alt={props.card.name}
+        src={card.link}
+        alt={card.name}
         onClick={handleClick}
       />
       <div className="photo-container__elements">
-        <h2 className="photo-container__text">{props.card.name}</h2>
+        <h2 className="photo-container__text">{card.name}</h2>
         <div className="photo-container__like-info">
           <button
             type="button"
             className={`photo-container__like ${
               isLiked ? "photo-container__like_active" : null
             }`}
-            onClick={handleLikeClick}
+            onClick={() => onCardLike(card)}
           ></button>
           <span className="photo-container__like_count">
-            {props.card.likes.length}
+            {card.likes.length}
           </span>
         </div>
       </div>
       <button
         type="button"
         className={`photo-container__dlt ${
-          props.card.owner._id === currentUser._id
+          card.owner === currentUser._id
             ? null
             : "photo-container__dlt_hidden"
         }`}

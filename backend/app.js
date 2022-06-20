@@ -2,6 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { celebrate, Joi, errors } = require('celebrate');
+const cors = require('./middlewares/cors');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 const user = require('./routers/user');
 const card = require('./routers/card');
 const auth = require('./middlewares/auth');
@@ -9,11 +11,19 @@ const { login, createUser } = require('./controllers/user');
 const Error404 = require('./errors/error404');
 
 const app = express();
+app.use(cors);
+mongoose.connect('mongodb://localhost:27017/mestodb', () => {
+  console.log('Mongo up');
+});
 
-mongoose.connect('mongodb://localhost:27017/mestodb');
-
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Сервер сейчас упадёт');
+  }, 0);
+});
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(requestLogger);
 
 app.post(
   '/signin',
@@ -46,7 +56,7 @@ app.use('/', auth, card);
 app.use('*', () => {
   throw new Error404('Такой страницы не существует');
 });
-
+app.use(errorLogger);
 app.use(errors());
 
 app.use((err, _, res, next) => {

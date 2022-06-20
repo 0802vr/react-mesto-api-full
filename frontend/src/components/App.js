@@ -59,6 +59,7 @@ function App() {
 
       Auth.checkToken(jwt)
         .then((token) => {
+           
           if (token.data._id && token.data.email) {
             setEmail(token.data.email);
             setLoggedIn(true);
@@ -100,6 +101,7 @@ function App() {
       .getUserInfo()
       .then((userInfo) => {
         setCurrentUser(userInfo);
+        console.log(userInfo)
       })
 
       .catch((err) => {
@@ -114,6 +116,7 @@ function App() {
       .getInitialCards()
       .then((cardList) => {
         setCards(cardList);
+        console.log(cardList)
       })
 
       .catch((err) => {
@@ -122,23 +125,29 @@ function App() {
        
   } 
   React.useEffect(() => {
-    if (localStorage.getItem('jwt')){
-    getUserInfo();
-    getCard();
-  }
+    if (loggedIn === true) {
+    Promise.all([api.getUserInfo(), api.getInitialCards()]).then(([user, cards]) => {
+      setCurrentUser(user.data);
+      setCards(cards.data);
+      
+    }).catch((err) => {
+      console.error(err);
+    });}
   }, [loggedIn]);
 
 
   function handleCardLike(card) {
+   
     // Снова проверяем, есть ли уже лайк на этой карточке
-    const isLiked = card.card.likes.some((i) => i._id === currentUser._id);
+    const isLiked = card.likes.some((i) => i === currentUser._id);
 
     api
-      .changeLikeCardStatus(card.card._id, !isLiked)
-      .then((newCard) => {
-        setCards((cards) =>
-          cards.map((c) => (c._id === card.card._id ? newCard : c))
-        );
+      .changeLikeCardStatus(card._id, isLiked)
+      .then((newCard) => {   
+       console.log(newCard)
+       if(!isLiked){setCards((cards) => cards.map((c) => c._id === card._id ? newCard.data : c));} //console.log(isLiked)           
+       else if (isLiked){setCards((cards) => cards.map((c) => c._id === card._id ? newCard.card : c));}
+        
       })
       .catch((err) => {
         console.log(err); // тут ловим ошибку
@@ -155,11 +164,13 @@ function App() {
         console.log(err);
       });
   }
-  function handleUpdateUser(updateProfile) {
+  
+  function handleUpdateUser(data) {
     api
-      .editProfile(updateProfile.name, updateProfile.about)
+      .editProfile(data.name, data.about)
       .then((newEdit) => {
-        setCurrentUser(newEdit);
+        console.log(newEdit)
+        setCurrentUser(newEdit.user);
         closeAllPopups();
       })
 
@@ -171,7 +182,8 @@ function App() {
     api
       .addAvatar(avatar)
       .then((newAvatar) => {
-        setCurrentUser(newAvatar);
+        setCurrentUser({ ...currentUser, avatar });
+         
         closeAllPopups();
       })
 
@@ -179,11 +191,11 @@ function App() {
         console.log(err); // тут ловим ошибку
       });
   }
-  function handleUpdateCard({ name, link }) {
+  function handleUpdateCard(data) {
     api
-      .addCard({ name: name, link: link })
+      .addCard(data)
       .then((newCard) => {
-        setCards([newCard, ...cards]);
+        setCards([newCard.data, ...cards]);
         closeAllPopups();
       })
 
@@ -224,7 +236,7 @@ function App() {
       setTooltipOpen(true);
     });
     }
-  
+
    
   function handleTokenOut() {
     localStorage.removeItem("jwt");
