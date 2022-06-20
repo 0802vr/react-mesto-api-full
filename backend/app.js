@@ -1,9 +1,9 @@
 require('dotenv').config();
 const express = require('express');
+const cors = require('cors');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { celebrate, Joi, errors } = require('celebrate');
-const cors = require('./middlewares/cors');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const user = require('./routers/user');
 const card = require('./routers/card');
@@ -12,7 +12,7 @@ const { login, createUser } = require('./controllers/user');
 const Error404 = require('./errors/error404');
 
 const app = express();
-app.use(cors);
+app.use(cors());
 mongoose.connect('mongodb://localhost:27017/mestodb', () => {
   console.log('Mongo up');
 });
