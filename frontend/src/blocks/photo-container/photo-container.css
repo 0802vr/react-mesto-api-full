@@ -1,0 +1,9 @@
+.photo-container {
+  border-radius: 10px;
+   flex-wrap: wrap;
+  background-color: #fff;
+  align-items: baseline;
+  position: relative;
+   
+  
+}

@@ -1,0 +1,9 @@
+.login__form{
+    margin: 0;
+    padding: 0;
+    width: 358px;
+    z-index: 2;
+    background-color: black;
+    align-self: center;
+    
+}
